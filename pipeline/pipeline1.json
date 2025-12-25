@@ -1,0 +1,35 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_name",
+					"value": {
+						"value": "@pipeline().parameters.pl_file_name",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"pl_file_name": {
+				"type": "String"
+			}
+		},
+		"variables": {
+			"file_name": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
