@@ -49,7 +49,10 @@
 						"referenceName": "input_dataset",
 						"type": "DatasetReference"
 					},
-					"fieldList": [],
+					"fieldList": [
+						"childItems",
+						"lastModified"
+					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"enablePartitionDiscovery": false
@@ -60,11 +63,6 @@
 				}
 			}
 		],
-		"variables": {
-			"file_name": {
-				"type": "String"
-			}
-		},
 		"annotations": []
 	}
 }
