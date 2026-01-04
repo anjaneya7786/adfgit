@@ -1,0 +1,25 @@
+{
+	"name": "sql_database",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServer1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "file_name",
+				"type": "varchar"
+			},
+			{
+				"name": "loaded_dttm",
+				"type": "timestamp"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "load_summary"
+		}
+	}
+}

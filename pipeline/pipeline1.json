@@ -5,7 +5,14 @@
 			{
 				"name": "Lookup1",
 				"type": "Lookup",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -16,20 +23,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@SELECT \nloaded_dttm\nFROM dbo.load_summary\nWHERE file_name = pipeline().parameters.file_name",
+							"type": "Expression"
 						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "input_dataset",
+						"referenceName": "sql_database",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -47,22 +53,66 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "input_dataset",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"file_name": {
+								"value": "@pipeline().parameters.file_name",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
-						"childItems",
 						"lastModified"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "Append variable1",
+				"type": "AppendVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "timestamp",
+					"value": ""
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
+		"parameters": {
+			"file_name": {
+				"type": "string",
+				"defaultValue": "SalesHourly.csv"
+			}
+		},
+		"variables": {
+			"timestamp": {
+				"type": "Array"
+			}
+		},
 		"annotations": []
 	}
 }
