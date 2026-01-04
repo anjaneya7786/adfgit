@@ -179,45 +179,94 @@
 									"type": "DatasetReference"
 								}
 							]
-						},
-						{
-							"name": "INSERT LOAD SUMMARY",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "LOAD",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "SqlServer1",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "NonQuery",
-										"text": {
-											"value": "INSERT INTO dbo.load_summary (file_name, loaded_dttm)\nVALUES('@{pipeline().parameters.file_name}','@{formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')}')",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
 						}
 					]
 				}
+			},
+			{
+				"name": "INSERT LOAD SUMMARY",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "INSERT INTO dbo.load_summary (file_name, loaded_dttm, load_type, pipeline_name, pipeline_run_id, pipeline_trigger_id, load_status)\nVALUES(\n    '@{pipeline().parameters.file_name}',\n    '@{formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')}',\n    '@{variables('load_tyoe')}',\n    '@{pipeline().Pipeline}',\n    '@{pipeline().RunId}',\n    '@{pipeline().TriggerName}',\n    'Success'\n)",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "INSERT LOAD SUMMARY ON FAILURE",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "SqlServer1",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "INSERT INTO dbo.load_summary (file_name, loaded_dttm, load_type, pipeline_name, pipeline_run_id, pipeline_trigger_id, load_status)\nVALUES(\n    '@{pipeline().parameters.file_name}',\n    '@{formatDateTime(utcNow(),'yyyy-MM-dd HH:mm:ss')}',\n    '@{variables('load_tyoe')}',\n    '@{pipeline().Pipeline}',\n    '@{pipeline().RunId}',\n    '@{pipeline().TriggerName}',\n    'Failed'\n)",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Fail1",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "INSERT LOAD SUMMARY ON FAILURE",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"parameters": {
