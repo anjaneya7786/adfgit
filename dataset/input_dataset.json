@@ -8,6 +8,9 @@
 		"parameters": {
 			"file_name": {
 				"type": "String"
+			},
+			"file_path": {
+				"type": "String"
 			}
 		},
 		"annotations": [],
@@ -19,7 +22,10 @@
 					"value": "@dataset().file_name",
 					"type": "Expression"
 				},
-				"fileSystem": "input-data"
+				"fileSystem": {
+					"value": "@dataset().file_path",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
