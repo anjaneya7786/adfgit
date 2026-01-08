@@ -3,17 +3,7 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "incremental_load_with_watermark_table",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"file_name": "@triggerBody().fileName"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
 			"blobPathBeginsWith": "/input-data/blobs/SalesHourly.csv",
