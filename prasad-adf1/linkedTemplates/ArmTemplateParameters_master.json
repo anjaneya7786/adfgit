@@ -8,8 +8,20 @@
 		"AzureDataLakeStorage1_accountKey": {
 			"value": ""
 		},
+		"SqlServer1_password": {
+			"value": ""
+		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"value": "https://adfsaprasad.dfs.core.windows.net/"
+		},
+		"SqlServer1_properties_typeProperties_server": {
+			"value": "prasadadfserver.database.windows.net"
+		},
+		"SqlServer1_properties_typeProperties_database": {
+			"value": "adfdb"
+		},
+		"SqlServer1_properties_typeProperties_userName": {
+			"value": "prasad"
 		},
 		"containerUri": {
 			"value": ""
